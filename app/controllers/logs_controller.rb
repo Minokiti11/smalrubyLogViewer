@@ -16,14 +16,17 @@ class LogsController < ApplicationController
   end
   
   def show
-    log_file_path = '/Users/minorisugimura/.wine/drive_c/koshien2024/log/player1.log'
+    # OSによってログファイルのパスを分ける
+    log_file_path = case RbConfig::CONFIG['host_os']
+    when /darwin/  # macOS
+      '/Users/minorisugimura/.wine/drive_c/koshien2024/log/player1.log'
+    when /mswin|mingw|cygwin/  # Windows
+      'C:/koshien2024/log/player1.log'
+    else
+      raise "サポートされていないOSです"
+    end
 
     if File.exist?(log_file_path)
-      p File.readlines(log_file_path)
-                  .map { |line| line.gsub(/.*getMapAreaを実行します 引数=\[(\d+), (\d+)\].*/) { "getMapArea([#{Regexp.last_match(1)}, #{Regexp.last_match(2)}])"} }
-                  .map { |line| line.gsub(/.*moveToを実行します 引数=\[(\d+), (\d+)\].*/) { "moveTo([#{Regexp.last_match(1)}, #{Regexp.last_match(2)}])"} }
-                  .map { |line| line.gsub(/.*setDynamiteを実行します 引数=\[(\d+), (\d+)\].*/) { "setDynamite([#{Regexp.last_match(1)}, #{Regexp.last_match(2)}])"} }
-                  .split { |line| line.include?('プレイヤー名を設定します') }[1]
       @logs = File.readlines(log_file_path)
                   .map { |line| line.gsub(/.*getMapAreaを実行します 引数=\[(\d+), (\d+)\].*/) { "getMapArea([#{Regexp.last_match(1)}, #{Regexp.last_match(2)}])"} }
                   .map { |line| line.gsub(/.*moveToを実行します 引数=\[(\d+), (\d+)\].*/) { "moveTo([#{Regexp.last_match(1)}, #{Regexp.last_match(2)}])"} }
