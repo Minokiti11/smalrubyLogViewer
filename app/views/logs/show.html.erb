@@ -1,11 +1,81 @@
 <html>
   <head>
     <title>Game Server</title>
+    <style>
+      body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #ffffff;
+      }
+      canvas {
+        border: 1px solid #000;
+      }
+    </style>
   </head>
 
   <body>
       <h2>Smalruby Koshien Log Viewer</h2>
-      
+
+      <canvas id="canvas" width="1200" height="870"></canvas>
+      <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Initial settings
+        const cellSize = 50;
+        const rows = 15;
+        const cols = 15;
+        const clusters = [
+          [[15, 12], [15, 7], [15, 4], [11, 12], [14, 10], [14, 11], [15, 5]],
+          [[9, 6], [7, 7], [7, 6], [9, 7]],
+          [[5, 12]],
+          [[7, 4], [9, 5], [7, 5], [7, 3], [9, 3], [9, 4]],
+          [[1, 5], [1, 1], [2, 1], [1, 7]]
+        ];
+        const centerPoints = [[1, 4], [5, 12], [14, 8], [8, 7], [8, 4]];
+
+        // Draw grid
+        for (let i = 0; i <= rows; i++) {
+          for (let j = 0; j <= cols; j++) {
+            ctx.fillStyle = 'rgba(255, 128, 128, 0.5)';
+            ctx.fillRect(j * cellSize + j, i * cellSize + i, cellSize, cellSize);
+          }
+        }
+
+        // Compute MSE (Mean Squared Error)
+        let mse = 0;
+        clusters.forEach((cluster, clusterIndex) => {
+          const center = centerPoints[clusterIndex];
+          let sumDistance = 0;
+
+          cluster.forEach(([x, y]) => {
+            const distance = Math.sqrt((center[0] - x) ** 2 + (center[1] - y) ** 2);
+            sumDistance += distance;
+          });
+
+          const averageDistance = sumDistance / cluster.length;
+          mse += averageDistance;
+        });
+        mse /= clusters.length;
+
+        // Draw clusters
+        clusters.forEach((cluster, index) => {
+          const randomColor = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 1)`;
+          ctx.fillStyle = randomColor;
+
+          cluster.forEach(([x, y]) => {
+            ctx.fillRect(x * cellSize + x, y * cellSize + y, cellSize, cellSize);
+          });
+        });
+
+        // Display MSE
+        ctx.font = '32px Arial';
+        ctx.fillStyle = 'green';
+        ctx.fillText(`MSE: ${mse.toFixed(2)}`, 50, 50);
+      </script>
       <div>
         <button onclick="previousTurn()">◀︎</button>
         <button onclick="nextTurn()">▶︎</button>
