@@ -1,13 +1,34 @@
 class LogsController < ApplicationController
+  def index
+    @logs = Log.all
+  end
+
+  def new
+    @log = Log.new
+  end
+  
+  def create
+    uploaded_file = params[:file]
+    excel_file_path = Rails.root.join("public/uploads/#{uploaded_file.original_filename}")
+    File.open(excel_file_path, 'w+b') do |file|
+      file.write(uploaded_file.read)
+    end
+  end
+  
   def show
-    log_file_path = '../../../../koshien2024/log/player1.log'
+    log_file_path = '/Users/minorisugimura/.wine/drive_c/koshien2024/log/player1.log'
 
     if File.exist?(log_file_path)
+      p File.readlines(log_file_path)
+                  .map { |line| line.gsub(/.*getMapAreaを実行します 引数=\[(\d+), (\d+)\].*/) { "getMapArea([#{Regexp.last_match(1)}, #{Regexp.last_match(2)}])"} }
+                  .map { |line| line.gsub(/.*moveToを実行します 引数=\[(\d+), (\d+)\].*/) { "moveTo([#{Regexp.last_match(1)}, #{Regexp.last_match(2)}])"} }
+                  .map { |line| line.gsub(/.*setDynamiteを実行します 引数=\[(\d+), (\d+)\].*/) { "setDynamite([#{Regexp.last_match(1)}, #{Regexp.last_match(2)}])"} }
+                  .split { |line| line.include?('プレイヤー名を設定します') }[1]
       @logs = File.readlines(log_file_path)
                   .map { |line| line.gsub(/.*getMapAreaを実行します 引数=\[(\d+), (\d+)\].*/) { "getMapArea([#{Regexp.last_match(1)}, #{Regexp.last_match(2)}])"} }
                   .map { |line| line.gsub(/.*moveToを実行します 引数=\[(\d+), (\d+)\].*/) { "moveTo([#{Regexp.last_match(1)}, #{Regexp.last_match(2)}])"} }
                   .map { |line| line.gsub(/.*setDynamiteを実行します 引数=\[(\d+), (\d+)\].*/) { "setDynamite([#{Regexp.last_match(1)}, #{Regexp.last_match(2)}])"} }
-                  .split { |line| line.include?('プレイヤー名を設定します') }[2]
+                  .split { |line| line.include?('プレイヤー名を設定します') }[1]
                   .split { |line| line.include?('turnOver') }
                   # .map(&:strip) # 各行の前後の空白を削除する場合
       @logs.each_with_index do |log, index|
