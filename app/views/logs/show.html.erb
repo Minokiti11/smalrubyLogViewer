@@ -1,0 +1,59 @@
+<html>
+  <head>
+    <title>Game Server</title>
+  </head>
+
+  <body>
+      <h2>Smalruby Koshien Log Viewer</h2>
+
+      <div>
+        <button onclick="previousTurn()">◀︎</button>
+        <button onclick="nextTurn()">▶︎</button>
+      </div>
+
+      <div id="logDisplay">
+        <% @logs.each_with_index do |log, index| %>
+          <div class="turn" id="turn-<%= index %>" style="display: none;">
+            <h4>turn: <%= index + 1 %></h4>
+            <% if log =~ /Clusters\(n=\d+\) = \[\[\[.*?\]\]\]/ %>
+              <% p "passing" %>
+              <% @clusters = log.scan(/Clusters\(n=\d+\) = (\[\[\[.*?\]\]\])/).flatten.first %>
+              <% @centroids = log.scan(/Centroids: (\[\[.*?\]\])/).flatten.first %>
+              <% @mse = log.scan(/MSE = ([\d.]+)/).flatten.first %>
+            <% end %>
+
+            <%= @clusters %>
+            <%= @centroids %>
+            <%= @mse %>
+
+            <% log.each do |l| %>
+              <%= simple_format(l) %>
+            <% end %>
+            <hr style="border: 1px solid #ccc; margin: 20px 0;">
+          </div>
+        <% end %>
+      </div>
+
+      <script>
+        let currentTurn = 0;
+        document.getElementById('turn-' + currentTurn).style.display = 'block';
+
+        function previousTurn() {
+          if (currentTurn > 0) {
+            document.getElementById('turn-' + currentTurn).style.display = 'none';
+            currentTurn--;
+            document.getElementById('turn-' + currentTurn).style.display = 'block';
+          }
+        }
+
+        function nextTurn() {
+          if (currentTurn < <%= @logs.size - 1 %>) {
+            document.getElementById('turn-' + currentTurn).style.display = 'none';
+            currentTurn++;
+            document.getElementById('turn-' + currentTurn).style.display = 'block';
+          }
+        }
+      </script>
+  </body>
+</html>
+
