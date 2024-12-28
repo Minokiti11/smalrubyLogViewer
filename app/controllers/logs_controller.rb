@@ -34,23 +34,21 @@ class LogsController < ApplicationController
                   .split { |line| line.include?('プレイヤー名を設定します') }[1]
                   .split { |line| line.include?('turnOver') }
                   # .map(&:strip) # 各行の前後の空白を削除する場合
+      @clusters = []
+      @centroids = []
+      @mse = []
       @logs.each_with_index do |log, index|
+        clusters = []
+        centroids = []
+        mse = []
         log.each do |l|
-          clusters = l.scan(/Clusters\(n=\d+\) = (\[\[\[.*?\]\]\])/)
-          centroids = l.scan(/Centroids: (\[\[.*?\]\])/)
-          mse = l.scan(/MSE = ([\d.]+)/)
-
-          # 変数を出力
-          if clusters.present?
-            puts "Clusters(turn: #{index + 1}): #{clusters}"
-          end
-          if centroids.present?
-            puts "Centroids(turn: #{index + 1}): #{centroids}"
-          end
-          if mse.present?
-            puts "MSE(turn: #{index + 1}): #{mse}"
-          end
+          clusters += l.scan(/Clusters\(n=\d+\) = (\[\[\[.*?\]\]\])/)
+          centroids += l.scan(/Centroids: (\[\[.*?\]\])/)
+          mse += l.scan(/MSE = ([\d.]+)/)
         end
+        @clusters.push(clusters[0])
+        @centroids.push(centroids[0])
+        @mse.push(mse[0])
       end
     else
       render json: { error: 'ログファイルが見つかりません。' }, status: :not_found

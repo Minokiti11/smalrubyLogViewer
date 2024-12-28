@@ -20,32 +20,16 @@
         const cellSize = 30;
         const rows = 15;
         const cols = 15;
-        const clusters = [
-          [[15, 12], [15, 7], [15, 4], [11, 12], [14, 10], [14, 11], [15, 5]],
-          [[9, 6], [7, 7], [7, 6], [9, 7]],
-          [[5, 12]],
-          [[7, 4], [9, 5], [7, 5], [7, 3], [9, 3], [9, 4]],
-          [[1, 5], [1, 1], [2, 1], [1, 7]]
-        ];
-        const centerPoints = [[1, 4], [5, 12], [14, 8], [8, 7], [8, 4]];
+        let clusters = null;
+        let centerPoints = null;
 
         // Draw grid
         for (let i = 0; i <= rows; i++) {
           for (let j = 0; j <= cols; j++) {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+            ctx.fillStyle = 'rgb(192, 192, 192)';
             ctx.fillRect(j * cellSize + j, i * cellSize + i, cellSize, cellSize);
           }
         }
-
-        // Draw clusters
-        clusters.forEach((cluster, index) => {
-          const randomColor = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 1)`;
-          ctx.fillStyle = randomColor;
-
-          cluster.forEach(([x, y]) => {
-            ctx.fillRect(x * cellSize + x, y * cellSize + y, cellSize, cellSize);
-          });
-        });
       </script>
       <div>
         <button onclick="previousTurn()">◀︎</button>
@@ -56,16 +40,11 @@
         <% @logs.each_with_index do |log, index| %>
           <div class="turn" id="turn-<%= index %>" style="display: none;">
             <h4>turn: <%= index + 1 %></h4>
-            <% if log =~ /Clusters\(n=\d+\) = \[\[\[.*?\]\]\]/ %>
-              <% p "passing" %>
-              <% @clusters = log.scan(/Clusters\(n=\d+\) = (\[\[\[.*?\]\]\])/).flatten.first %>
-              <% @centroids = log.scan(/Centroids: (\[\[.*?\]\])/).flatten.first %>
-              <% @mse = log.scan(/MSE = ([\d.]+)/).flatten.first %>
+            <% if @clusters[index] != nil %>
+              <h4 id="<%= index %>-clusters" data-clusters="<%= @clusters[index][0] %>">clusters: <%= @clusters[index][0] %></h4>
+              <h4 id="<%= index %>-centroids" data-centroids="<%= @centroids[index][0] %>">centroids: <%= @centroids[index][0] %></h4>
+              <h4 id="<%= index %>-mse" data-mse="<%= @mse[index][0] %>">mse: <%= @mse[index][0] %></h4>
             <% end %>
-
-            <%= @clusters %>
-            <%= @centroids %>
-            <%= @mse %>
 
             <% log.each do |l| %>
               <%= simple_format(l) %>
@@ -84,6 +63,25 @@
             document.getElementById('turn-' + currentTurn).style.display = 'none';
             currentTurn--;
             document.getElementById('turn-' + currentTurn).style.display = 'block';
+
+            // Draw grid
+            for (let i = 0; i <= rows; i++) {
+              for (let j = 0; j <= cols; j++) {
+                ctx.fillStyle = 'rgb(192, 192, 192)';
+                ctx.fillRect(j * cellSize + j, i * cellSize + i, cellSize, cellSize);
+              }
+            }
+
+            // Draw clusters
+            clusters = JSON.parse(document.getElementById(`${currentTurn}-clusters`).getAttribute('data-clusters'));
+            clusters.forEach((cluster, index) => {
+              const randomColor = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 1)`;
+              ctx.fillStyle = randomColor;
+
+              cluster.forEach(([x, y]) => {
+                ctx.fillRect(x * cellSize + x, y * cellSize + y, cellSize, cellSize);
+              });
+            });
           }
         }
 
@@ -92,6 +90,25 @@
             document.getElementById('turn-' + currentTurn).style.display = 'none';
             currentTurn++;
             document.getElementById('turn-' + currentTurn).style.display = 'block';
+
+            // Draw grid
+            for (let i = 0; i <= rows; i++) {
+              for (let j = 0; j <= cols; j++) {
+                ctx.fillStyle = 'rgb(192, 192, 192)';
+                ctx.fillRect(j * cellSize + j, i * cellSize + i, cellSize, cellSize);
+              }
+            }
+
+            // Draw clusters
+            clusters = JSON.parse(document.getElementById(`${currentTurn}-clusters`).getAttribute('data-clusters'));
+            clusters.forEach((cluster, index) => {
+              const randomColor = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 1)`;
+              ctx.fillStyle = randomColor;
+
+              cluster.forEach(([x, y]) => {
+                ctx.fillRect(x * cellSize + x, y * cellSize + y, cellSize, cellSize);
+              });
+            });
           }
         }
       </script>
