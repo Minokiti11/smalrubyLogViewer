@@ -1,5 +1,9 @@
 # README
 
+### Version
+Rails: 7.0.7
+Ruby: 3.1.4
+
 ### Usage
 ```ruby:logs_controller.rb
   def show
