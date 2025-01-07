@@ -24,8 +24,8 @@
         let centerPoints = null;
 
         // Draw grid
-        for (let i = 0; i <= rows; i++) {
-          for (let j = 0; j <= cols; j++) {
+        for (let i = 0; i < rows; i++) {
+          for (let j = 0; j < cols; j++) {
             ctx.fillStyle = 'rgb(192, 192, 192)';
             ctx.fillRect(j * cellSize + j, i * cellSize + i, cellSize, cellSize);
           }
@@ -65,8 +65,8 @@
             document.getElementById('turn-' + currentTurn).style.display = 'block';
 
             // Draw grid
-            for (let i = 0; i <= rows; i++) {
-              for (let j = 0; j <= cols; j++) {
+            for (let i = 0; i < rows; i++) {
+              for (let j = 0; j < cols; j++) {
                 ctx.fillStyle = 'rgb(192, 192, 192)';
                 ctx.fillRect(j * cellSize + j, i * cellSize + i, cellSize, cellSize);
               }
@@ -82,7 +82,7 @@
               ctx.fillStyle = colors[index % colors.length]; // HSL形式の色をfillStyleに設定
 
               cluster.forEach(([x, y]) => {
-                ctx.fillRect(x * cellSize + x, y * cellSize + y, cellSize, cellSize);
+                ctx.fillRect((x-1) * cellSize + (x-1), (y-1) * cellSize + (y-1), cellSize, cellSize);
               });
             });
           }
@@ -95,8 +95,8 @@
             document.getElementById('turn-' + currentTurn).style.display = 'block';
 
             // Draw grid
-            for (let i = 0; i <= rows; i++) {
-              for (let j = 0; j <= cols; j++) {
+            for (let i = 0; i < rows; i++) {
+              for (let j = 0; j < cols; j++) {
                 ctx.fillStyle = 'rgb(192, 192, 192)';
                 ctx.fillRect(j * cellSize + j, i * cellSize + i, cellSize, cellSize);
               }
@@ -112,7 +112,7 @@
               ctx.fillStyle = colors[index % colors.length]; // HSL形式の色をfillStyleに設定
 
               cluster.forEach(([x, y]) => {
-                ctx.fillRect(x * cellSize + x, y * cellSize + y, cellSize, cellSize);
+                ctx.fillRect((x-1) * cellSize + (x-1), (y-1) * cellSize + (y-1), cellSize, cellSize);
               });
             });
           }
