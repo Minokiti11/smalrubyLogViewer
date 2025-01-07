@@ -76,7 +76,7 @@
             clusters = JSON.parse(document.getElementById(`${currentTurn}-clusters`).getAttribute('data-clusters'));
             clusters.forEach((cluster, index) => {
               const colors = Array.from({ length: clusters.length }, (_, i) => {
-                const hue = (i * 360) / N; // 色相を均等に分配
+                const hue = (i * 360) / clusters.length; // 色相を均等に分配
                 return `hsl(${hue}, 100%, 50%)`; // HSL形式で色を生成
               });
               ctx.fillStyle = colors[index % colors.length]; // HSL形式の色をfillStyleに設定
