@@ -77,7 +77,7 @@
             clusters.forEach((cluster, index) => {
               const colors = Array.from({ length: clusters.length }, (_, i) => {
                 const hue = (i * 360) / clusters.length; // 色相を均等に分配
-                return `hsl(${hue}, 100%, 50%)`; // HSL形式で色を生成
+                return `hsl(${hue}, 50%, 50%)`; // HSL形式で色を生成
               });
               ctx.fillStyle = colors[index % colors.length]; // HSL形式の色をfillStyleに設定
 
