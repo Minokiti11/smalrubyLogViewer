@@ -42,8 +42,6 @@
             <h4>turn: <%= index + 1 %></h4>
             <% if @clusters[index] != nil %>
               <h4 id="<%= index %>-clusters" data-clusters="<%= @clusters[index][0] %>">clusters: <%= @clusters[index][0] %></h4>
-              <h4 id="<%= index %>-centroids" data-centroids="<%= @centroids[index][0] %>">centroids: <%= @centroids[index][0] %></h4>
-              <h4 id="<%= index %>-mse" data-mse="<%= @mse[index][0] %>">mse: <%= @mse[index][0] %></h4>
             <% end %>
 
             <% log.each do |l| %>
